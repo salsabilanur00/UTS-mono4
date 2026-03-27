@@ -136,6 +136,7 @@ const isBrowserRequest = (request: Request): boolean => {
 };
 
 const app = new Elysia()
+  // !!! modifikasi cors() dan onRequest
   .use(cors({ origin: [process.env.FRONTEND_URL ?? "", process.env.TEST_URL ?? ""] }))
   .onRequest(({ request, set }) => {
     const url = new URL(request.url);
@@ -226,9 +227,9 @@ DB_AUTH_TOKEN=eyJhbGciOiJFZERTQSxxxxx
 ### 7. Test backend Build
 Untuk memeriksa apakah koneksi turso backend & build (untuk vercel) berhasil:
 ```bash
-bun dev:turso # Cek koneksi development server dengan turso database. Jika App2.tsx menampilkan list, maka berhasil.
+bun dev:turso # Cek koneksi development server dengan turso database. Jika `/users` maka berhasil.
 bun run build # jalankan build ke output
-bun start # cek hasil build di dist/index.mjs. periksa path /users, dan debug-prisma (jika file ada maka berhasil) 
+bun start # cek hasil build di dist/index.mjs. periksa path `/users`, dan debug-prisma (jika file ada maka berhasil) 
 ```
 
 **Jika bun start Gagal**, karena error `Cannot file module './generated/prisma/client'`:
