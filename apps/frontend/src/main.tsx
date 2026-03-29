@@ -1,7 +1,6 @@
 // apps/frontend/src/main.tsx
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import './index.css'
 
 // Routing sederhana berdasarkan path
 const path = window.location.pathname
@@ -11,7 +10,7 @@ if (path === '/classroom') {
   const { default: ClassroomApp } = await import('./App3')
   App = ClassroomApp
 } else {
-  const { default: DefaultApp } = await import('./App2')
+  const { default: DefaultApp } = await import('./App3')
   App = DefaultApp
 }
 

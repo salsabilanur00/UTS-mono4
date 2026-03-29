@@ -21,8 +21,12 @@ const app = new Elysia()
     })
   )
 
-  //.use(swagger())
-  .use(cookie())
+  .use(swagger())
+  .use(cookie({
+  secrets: process.env.SESSION_SECRET || "secret"
+  }))
+  
+  
 
   // ✅ TAMBAHAN proteksi API_KEY
   .onRequest(({ request, set }) => {
@@ -90,8 +94,8 @@ const app = new Elysia()
     session.maxAge = 60 * 60 * 24;
     session.path = "/";
     session.httpOnly = true;
-    session.secure = true;
-    session.sameSite = "none";
+    session.secure = false;
+    session.sameSite = "lax";
 
     // ✅ pakai ENV
     return redirect(`${process.env.FRONTEND_URL}/classroom`);

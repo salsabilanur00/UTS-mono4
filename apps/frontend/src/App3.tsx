@@ -94,26 +94,18 @@ function CourseWorkCard({ item }: { item: CourseWorkWithSubmission }) {
 
       <Separator className="shrink-0" />
 
-      {/*
-    ScrollArea membungkus seluruh body — card tidak akan
-    tumbuh melebihi tinggi container grid-nya.
-    Hapus ScrollArea kalau kamu tidak pakai fixed-height grid.
-  */}
       <ScrollArea className="flex-1 min-h-0">
         <CardContent className="flex flex-col gap-3 pt-3 pb-4">
 
-          {/* Deskripsi tugas */}
           {courseWork.description && (
             <div className="flex flex-col gap-1">
               <p className="text-xs font-semibold text-muted-foreground">DESKRIPSI</p>
-              {/* line-clamp-4: potong deskripsi panjang, tidak mendorong elemen lain */}
               <p className="text-sm text-foreground whitespace-pre-wrap wrap-break-word line-clamp-4">
                 {courseWork.description}
               </p>
             </div>
           )}
 
-          {/* Lampiran soal */}
           {courseWork.materials && courseWork.materials.length > 0 && (
             <div className="flex flex-col gap-1">
               <p className="text-xs font-semibold text-muted-foreground">LAMPIRAN TUGAS</p>
@@ -133,7 +125,6 @@ function CourseWorkCard({ item }: { item: CourseWorkWithSubmission }) {
             </div>
           )}
 
-          {/* Skor */}
           {submission && (
             <div className="flex items-center gap-2 shrink-0">
               <p className="text-xs font-semibold text-muted-foreground shrink-0">SKOR</p>
@@ -147,7 +138,6 @@ function CourseWorkCard({ item }: { item: CourseWorkWithSubmission }) {
             </div>
           )}
 
-          {/* Lampiran submisi mahasiswa */}
           {attachments.length > 0 && (
             <div className="flex flex-col gap-1">
               <p className="text-xs font-semibold text-muted-foreground">LAMPIRAN SUBMISI KAMU</p>
@@ -159,18 +149,15 @@ function CourseWorkCard({ item }: { item: CourseWorkWithSubmission }) {
             </div>
           )}
 
-          {/* Short answer */}
           {submission?.shortAnswerSubmission?.answer && (
             <div className="flex flex-col gap-1">
               <p className="text-xs font-semibold text-muted-foreground">JAWABAN SINGKATMU</p>
-              {/* break-words: cegah teks panjang tanpa spasi meluber keluar card */}
               <p className="text-sm italic wrap-break-word">
                 "{submission.shortAnswerSubmission.answer}"
               </p>
             </div>
           )}
 
-          {/* Late badge — selalu paling bawah, diberi padding atas */}
           {submission?.late && (
             <div className="pt-1">
               <Badge variant="destructive" className="w-fit text-xs">
@@ -199,7 +186,7 @@ export default function App() {
 
   // Cek status login
   useEffect(() => {
-    fetch("http://localhost:3000/auth/me", { credentials: "include" })
+    fetch(`${import.meta.env.VITE_BACKEND_URL}/auth/me`, { credentials: "include" })
       .then((r) => r.json())
       .then((d) => setLoggedIn(d.loggedIn))
       .catch(() => setLoggedIn(false))
@@ -208,7 +195,7 @@ export default function App() {
   // Load daftar courses setelah login
   useEffect(() => {
     if (!loggedIn) return
-    fetch("http://localhost:3000/classroom/courses", { credentials: "include" })
+    fetch(`${import.meta.env.VITE_BACKEND_URL}/classroom/courses`, { credentials: "include" })
       .then((r) => r.json())
       .then((d) => setCourses(d.data ?? []))
   }, [loggedIn])
@@ -220,7 +207,7 @@ export default function App() {
     setError(null)
     try {
       const res = await fetch(
-        `http://localhost:3000/classroom/courses/${courseId}/submissions`,
+        `${import.meta.env.VITE_BACKEND_URL}/classroom/courses/${courseId}/submissions`,
         { credentials: "include" }
       )
       const d = await res.json()
@@ -234,11 +221,11 @@ export default function App() {
   }
 
   const handleLogin = () => {
-    window.location.href = "http://localhost:3000/auth/login"
+    window.location.href = `${import.meta.env.VITE_BACKEND_URL}/auth/login`
   }
 
   const handleLogout = async () => {
-    await fetch("http://localhost:3000/auth/logout", { method: "POST", credentials: "include" })
+    await fetch(`${import.meta.env.VITE_BACKEND_URL}/auth/logout`, { method: "POST", credentials: "include" })
     setLoggedIn(false)
     setCourses([])
     setItems([])
@@ -270,13 +257,11 @@ export default function App() {
   return (
     <div className="min-h-screen bg-background p-6">
 
-      {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold">📚 Google Classroom Viewer</h1>
         <Button variant="outline" onClick={handleLogout}>Logout</Button>
       </div>
 
-      {/* Pilih Course */}
       <div className="mb-6">
         <p className="text-sm font-semibold text-muted-foreground mb-2">PILIH MATA KULIAH</p>
         <div className="flex flex-wrap gap-2">
@@ -299,7 +284,6 @@ export default function App() {
 
       <Separator className="mb-6" />
 
-      {/* Status / error */}
       {error && (
         <div className="mb-4 p-3 rounded bg-destructive/10 text-destructive text-sm">{error}</div>
       )}
@@ -308,7 +292,6 @@ export default function App() {
         <div className="text-center py-12 text-muted-foreground">Mengambil data tugas...</div>
       )}
 
-      {/* Grid tugas */}
       {!loading && items.length > 0 && (
         <>
           <p className="text-sm text-muted-foreground mb-4">{items.length} tugas ditemukan</p>
