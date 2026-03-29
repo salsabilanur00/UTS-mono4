@@ -22,9 +22,7 @@ const app = new Elysia()
   )
 
   .use(swagger())
-  .use(cookie({
-  secrets: process.env.SESSION_SECRET || "secret"
-  }))
+  .use(cookie())
   
   
 
@@ -177,3 +175,16 @@ if (process.env.NODE_ENV != "production") {
 export default app;
 
 export type App = typeof app;
+
+app.get("/users", ({ query }) => {
+  if (query.key !== "learn") {
+    return new Response("Unauthorized", { status: 401 });
+  }
+
+  return {
+    data: [
+      { id: 1, name: "User 1" },
+      { id: 2, name: "User 2" }
+    ]
+  };
+});
