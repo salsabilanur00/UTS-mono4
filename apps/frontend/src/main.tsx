@@ -6,7 +6,8 @@ import { createRoot } from 'react-dom/client'
 const path = window.location.pathname
 
 let App
-if (path === '/classroom') {
+
+if (path.startsWith('/classroom')) {
   const { default: ClassroomApp } = await import('./App3')
   App = ClassroomApp
 } else {

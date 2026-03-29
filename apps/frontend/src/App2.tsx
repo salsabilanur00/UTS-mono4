@@ -14,12 +14,29 @@ import { Button } from "@/components/ui/button"
 
 export default function App() {
   const [users, setUsers] = useState<User[]>([])
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const loadUsers = async () => {
-    const res = await fetch("http://localhost:3000/users")
-    const data: ApiResponse<User[]> = await res.json()
+    setLoading(true)
+    setError(null)
 
-    setUsers(data.data)
+    try {
+      const res = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}/users?key=learn`
+      )
+
+      if (!res.ok) {
+        throw new Error("Gagal mengambil data user")
+      }
+
+      const data: ApiResponse<User[]> = await res.json()
+      setUsers(data.data ?? [])
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Terjadi error")
+    } finally {
+      setLoading(false)
+    }
   }
 
   useEffect(() => {
@@ -29,7 +46,7 @@ export default function App() {
   return (
     <div className="flex justify-center p-10">
 
-      <Card className="w-150">
+      <Card className="w-[600px]">
         <CardHeader>
           <CardTitle>User List</CardTitle>
         </CardHeader>
@@ -39,6 +56,14 @@ export default function App() {
           <Button onClick={loadUsers} className="mb-4">
             Refresh
           </Button>
+
+          {loading && (
+            <p className="text-sm text-muted-foreground mb-2">Loading...</p>
+          )}
+
+          {error && (
+            <p className="text-sm text-red-500 mb-2">{error}</p>
+          )}
 
           <Table>
             <TableHeader>
@@ -50,6 +75,14 @@ export default function App() {
             </TableHeader>
 
             <TableBody>
+              {users.length === 0 && !loading && (
+                <TableRow>
+                  <TableCell colSpan={3} className="text-center">
+                    Tidak ada data
+                  </TableCell>
+                </TableRow>
+              )}
+
               {users.map((user) => (
                 <TableRow key={user.id}>
                   <TableCell>{user.id}</TableCell>
